@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk IT - Sistema Experto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🖥️ HelpDesk IT - Panel de Diagnóstico</h1>
+        <p>Sistema Experto de Monitoreo de Servidores</p>
+    </header>
+    <main id="contenedor-servidores">
+    </main>
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Diagnóstico</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-servidor"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-metricas" class="metricas-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
