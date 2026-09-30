@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experto Automático - Árbol de Decisión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 6 · LABORATORIO FINAL DEL MÓDULO 1</span>
+        <h1>🌳 El Experto Automático</h1>
+        <p>Un Árbol de Decisión aprende las reglas de marketing a partir de datos históricos</p>
+    </header>
+
+    <main>
+        <!-- Tarjeta: Dataset -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PUNTO 2 · DATASET SIMULADO</p>
+            <h2>Clientes históricos (X, Y)</h2>
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead><tr><th>#</th><th>Edad</th><th>Horas online</th><th>Compras previas</th><th>Y</th></tr></thead>
+                    <tbody id="tabla-dataset"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tarjeta: Reglas aprendidas -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PUNTOS 3 Y 4 · BASE DE CONOCIMIENTOS APRENDIDA</p>
+            <h2>Reglas generadas por el árbol</h2>
+            <ul class="lista-metricas" id="resumen-modelo"></ul>
+            <p class="subtitulo-modal">export_text(arbol)</p>
+            <div class="consola" id="export-text"></div>
+            <p class="subtitulo-modal">Reglas SI... ENTONCES</p>
+            <ul class="traza" id="lista-reglas"></ul>
+        </section>
+
+        <!-- Tarjeta: Consultar al experto -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">CONSULTA AL SISTEMA EXPERTO</p>
+            <h2>¿Este cliente hará clic?</h2>
+            <form id="form-cliente" class="formulario">
+                <label class="campo">Edad
+                    <input type="number" name="edad" value="23" min="0" max="120" required>
+                </label>
+                <label class="campo">Horas online / día
+                    <input type="number" name="horas_online" value="6" min="0" max="24" step="0.5" required>
+                </label>
+                <label class="campo">Compras previas
+                    <input type="number" name="compras_previas" value="0" min="0" required>
+                </label>
+            </form>
+            <button class="btn-diagnosticar" onclick="consultarCliente()">Clasificar cliente</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

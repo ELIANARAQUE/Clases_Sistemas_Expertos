@@ -1,0 +1,59 @@
+TALLER 6 - LABORATORIO FINAL: EL EXPERTO AUTOMÁTICO
+===================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt          (punto 1: instala scikit-learn)
+  python laboratorio.py      -> entrena el árbol e imprime export_text (puntos 2 a 4)
+  python app.py              -> interfaz web en http://127.0.0.1:5006
+
+ARCHIVOS
+  laboratorio.py   Dataset NumPy, DecisionTreeClassifier, export_text y traducción a reglas SI...ENTONCES.
+  app.py           API Flask (/api/dataset, /api/reglas, /api/predecir).
+  templates/, static/   Interfaz web: dataset, reglas aprendidas y consulta de clientes nuevos.
+
+2. DATASET (16 filas; X = [Edad, Horas_Online, Compras_Previas], Y = 1 clic / 0 ignora)
+   Patrón inventado a propósito:
+     - Jóvenes (<= 30 años) con 4 o más horas online -> clic
+     - Clientes fieles (6 o más compras previas)      -> clic
+     - El resto                                        -> ignora
+
+4. ÁRBOL IMPRESO CON export_text (max_depth = 3, exactitud 100 %)
+   |--- Compras_Previas <= 4.00
+   |   |--- Horas_Online <= 3.50
+   |   |   |--- class: 0
+   |   |--- Horas_Online >  3.50
+   |   |   |--- Edad <= 30.50
+   |   |   |   |--- class: 1
+   |   |   |--- Edad >  30.50
+   |   |   |   |--- class: 0
+   |--- Compras_Previas >  4.00
+   |   |--- class: 1
+
+   En formato de Sistema Experto:
+   R1: SI Compras <= 4 Y Horas <= 3.5              ENTONCES ignora
+   R2: SI Compras <= 4 Y Horas > 3.5 Y Edad <= 30.5 ENTONCES hace clic
+   R3: SI Compras <= 4 Y Horas > 3.5 Y Edad > 30.5  ENTONCES ignora
+   R4: SI Compras > 4                              ENTONCES hace clic
+
+5. DISCUSIÓN GRUPAL
+   ¿Tienen sentido comercial?
+     Sí. El árbol encontró solo, sin que se le dijera, las dos ideas con las que
+     se construyeron los datos: los clientes fieles responden a la publicidad
+     y, entre los demás, responde el público joven que pasa mucho tiempo en
+     línea. Eligió "Compras_Previas" como raíz porque es la pregunta que más
+     reduce la entropía (separa de una vez a todos los clientes fieles).
+     Detalle: la frontera quedó en 4 compras y no en 6, porque el árbol pone el
+     corte en el punto medio entre los valores observados (2 y 6). Con pocos
+     datos no puede saber dónde está exactamente la frontera real.
+
+   ¿Puede la IA crear la Base de Conocimientos mejor y más rápido que un humano?
+     Más rápido, sin duda: en milisegundos, y es reproducible y fácil de
+     actualizar cuando llegan datos nuevos. "Mejor" depende de los datos:
+       - Solo aprende lo que está en el dataset; si los datos tienen sesgos,
+         errores o son pocos (como aquí, 16 filas), las reglas los heredan.
+       - Una exactitud de 100 % sobre los datos de entrenamiento puede ser
+         sobreajuste; habría que validar con datos que el modelo no haya visto.
+       - No entiende causas ni contexto (temporadas, tipo de anuncio, ética).
+     Lo ideal es trabajar en conjunto: la IA propone las reglas y el experto
+     humano las valida, corrige y completa. La ventaja frente a una red
+     neuronal es que el árbol es explicable: sus reglas se pueden leer y auditar.
