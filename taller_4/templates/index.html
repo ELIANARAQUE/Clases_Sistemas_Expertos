@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bono Anual - Inferencia Mamdani</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 4 · INFERENCIA DIFUSA (MODELO MAMDANI)</span>
+        <h1>👥 Motor Lógico de Recursos Humanos</h1>
+        <p>Cálculo del bono anual según Desempeño y Antigüedad con min() y max()</p>
+    </header>
+
+    <main id="contenedor-empleados">
+        <!-- Tarjeta: Base de reglas -->
+        <section class="tarjeta-servidor tarjeta-ancha">
+            <p class="id-servidor">BASE DE REGLAS DIFUSAS</p>
+            <h2>Reglas del bono anual</h2>
+            <ul class="lista-metricas">
+                <li><span>R1</span> <span>SI Desempeño POBRE <em>O</em> Antigüedad CORTA → Bono BAJO · max()</span></li>
+                <li><span>R2</span> <span>SI Desempeño PROMEDIO → Bono MEDIO</span></li>
+                <li><span>R3</span> <span>SI Desempeño EXCELENTE <em>Y</em> Antigüedad LARGA → Bono ALTO · min()</span></li>
+            </ul>
+        </section>
+
+        <!-- Tarjeta: Empleado personalizado -->
+        <section class="tarjeta-servidor" id="tarjeta-personalizada">
+            <p class="id-servidor">ID: PERSONALIZADO</p>
+            <h2>Ajustar grados de membresía</h2>
+            <div class="formulario" id="form-grados"></div>
+            <button class="btn-diagnosticar" onclick="evaluarPersonalizado()">Calcular bono</button>
+        </section>
+
+        <!-- Tarjeta: Agregación (pregunta teórica) -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PREGUNTA TEÓRICA · AGREGACIÓN</p>
+            <h2>Dos reglas concluyen "Bono Alto"</h2>
+            <p class="descripcion">Mamdani une las conclusiones repetidas con la T-Conorma (OR = max).</p>
+            <div class="formulario">
+                <label class="campo">Fuerza regla A
+                    <input type="number" id="fuerza-a" value="0.4" min="0" max="1" step="0.05">
+                </label>
+                <label class="campo">Fuerza regla B
+                    <input type="number" id="fuerza-b" value="0.7" min="0" max="1" step="0.05">
+                </label>
+            </div>
+            <div class="consola" id="resultado-agregacion">fuerza_final_alto = max(0.4, 0.7)</div>
+            <button class="btn-diagnosticar" onclick="calcularAgregacion()">Agregar</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content ancho">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

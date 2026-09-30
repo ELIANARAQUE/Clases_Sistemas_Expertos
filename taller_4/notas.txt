@@ -1,0 +1,38 @@
+TALLER 4 - LABORATORIO: MOTOR LÓGICO DE RECURSOS HUMANOS
+========================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> activaciones de las 3 reglas en consola
+  python app.py              -> interfaz web en http://127.0.0.1:5004
+
+ARCHIVOS
+  laboratorio.py   Diccionario de variables difusas, evaluar_reglas_bono() con min()/max() y agregación.
+  app.py           API Flask (/api/empleados, /api/bono, /api/agregacion).
+  templates/, static/   Interfaz web con rangos para editar cada grado de 0 a 1.
+
+1. DICCIONARIO DE VARIABLES DIFUSAS (ejemplo de la guía)
+   grados = {"desempeno_pobre": 0.1, "desempeno_promedio": 0.3,
+             "desempeno_excelente": 0.85, "antiguedad_corta": 0.4,
+             "antiguedad_larga": 0.6}
+
+2. REGLAS
+   R1: SI Desempeño POBRE O Antigüedad CORTA -> Bono BAJO
+       activacion_r1 = max(desempeno_pobre, antiguedad_corta)   = max(0.1, 0.4)  = 0.4
+   R2: SI Desempeño PROMEDIO -> Bono MEDIO
+       activacion_r2 = desempeno_promedio                        = 0.3
+   R3: SI Desempeño EXCELENTE Y Antigüedad LARGA -> Bono ALTO
+       activacion_r3 = min(desempeno_excelente, antiguedad_larga) = min(0.85, 0.6) = 0.6
+
+3. DICCIONARIO RETORNADO POR EL MOTOR
+   {"BAJO": 0.4, "MEDIO": 0.3, "ALTO": 0.6}
+   (Bono con mayor activación: ALTO)
+
+4. PREGUNTA TEÓRICA: AGREGACIÓN
+   Dos reglas concluyen "Bono Alto" con fuerzas 0.4 y 0.7. La agregación de
+   Mamdani usa la T-Conorma (OR = max) para unirlas:
+
+       fuerza_final_alto = max(0.4, 0.7)    # = 0.7
+
+   La fuerza final de "Bono Alto" es 0.7: el conjunto de salida se trunca a esa
+   altura, porque basta con que una de las dos reglas lo respalde con 0.7.
