@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detección de Fraude - Sistema Experto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 2 · MOTOR DE INFERENCIA Y MODUS PONENS</span>
+        <h1>🏦 Motor de Fraude Bancario</h1>
+        <p>Encadenamiento hacia adelante (Forward Chaining) sobre transacciones con tarjeta</p>
+    </header>
+
+    <main id="contenedor-transacciones">
+        <!-- Tarjeta: Base de conocimientos -->
+        <section class="tarjeta-servidor tarjeta-ancha">
+            <p class="id-servidor">BASE DE CONOCIMIENTOS</p>
+            <h2>Reglas del sistema experto</h2>
+            <ul class="lista-metricas" id="lista-reglas"></ul>
+        </section>
+
+        <!-- Tarjeta: Transacción personalizada -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">ID: PERSONALIZADA</p>
+            <h2>Analizar una transacción nueva</h2>
+            <form id="form-transaccion" class="formulario">
+                <label class="campo">Monto (USD)
+                    <input type="number" name="monto" value="7000" min="0" step="1" required>
+                </label>
+                <label class="campo">Hora (0-23)
+                    <input type="number" name="hora" value="2" min="0" max="23" required>
+                </label>
+                <label class="campo">Intentos fallidos PIN
+                    <input type="number" name="intentos_fallidos" value="0" min="0" required>
+                </label>
+                <label class="campo campo-check">
+                    <input type="checkbox" name="pais_extranjero" checked> País extranjero
+                </label>
+                <label class="campo campo-check">
+                    <input type="checkbox" name="dispositivo_nuevo"> Dispositivo nuevo
+                </label>
+            </form>
+            <button class="btn-diagnosticar" onclick="analizarPersonalizada()">Ejecutar motor</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content ancho">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

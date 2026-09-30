@@ -1,0 +1,43 @@
+TALLER 2 - LABORATORIO: MOTOR DE FRAUDE BANCARIO
+================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> traza del motor en consola (punto 5 del taller)
+  python app.py              -> interfaz web en http://127.0.0.1:5002
+
+ARCHIVOS
+  laboratorio.py   Base de conocimientos (reglas), base de hechos y motor Forward Chaining.
+  app.py           API Flask que expone el motor (/api/reglas, /api/transacciones, /api/analizar).
+  templates/, static/   Interfaz web (misma base visual del taller 1).
+
+1. ¿CÓMO ACTÚA all() COMO COMPUERTA AND?
+   all() recibe un generador con el resultado de cada condición de la regla y
+   devuelve True solo si TODAS son True (si una falla, corta y devuelve False).
+   Es exactamente la conjunción lógica: SI A Y B Y C ENTONCES ...
+   Se extendió la comparación para aceptar operadores, ej. "monto": (">", 5000),
+   manteniendo la igualdad original para los hechos booleanos.
+
+3. BASE DE CONOCIMIENTOS (7 reglas, se pedían mínimo 4)
+   R1: SI [Bloquear Tarjeta] ENTONCES [Notificar Cliente]
+   R2: SI [Transacción Inusual] Y [País Extranjero] ENTONCES [Bloquear Tarjeta]
+   R3: SI [Transacción Inusual] Y [Horario Sospechoso] ENTONCES [Alerta de Fraude]
+   R4: SI [Posible Robo] Y [Dispositivo Nuevo] ENTONCES [Bloquear Tarjeta]
+   R5: SI [monto > 5000] ENTONCES [Transacción Inusual]
+   R6: SI [hora < 6] ENTONCES [Horario Sospechoso]
+   R7: SI [intentos fallidos >= 3] ENTONCES [Posible Robo]
+   Las reglas de alto nivel están primero a propósito, para que la traza
+   muestre el encadenamiento en ciclos distintos.
+
+5. VERIFICACIÓN DEL ENCADENAMIENTO (TX-001: monto 8500, país extranjero)
+   Ciclo 1: R5 -> transaccion_inusual = True
+   Ciclo 2: R2 -> bloquear_tarjeta = True   (usa el hecho deducido en el ciclo 1)
+   Ciclo 3: R1 -> notificar_cliente = True
+   Ciclo 4: ninguna regla agrega hechos nuevos -> el motor se detiene.
+   Conclusión: el motor deduce el bloqueo de la tarjeta por encadenamiento
+   hacia adelante (Modus Ponens aplicado dos veces), no por una regla directa.
+
+   Otros casos de prueba:
+   TX-002 (madrugada, nacional)      -> ALERTA  (R5 -> R6 -> R3)
+   TX-003 (PIN x4, celular nuevo)    -> BLOQUEO (R7 -> R4 -> R1)
+   TX-004 (compra normal)            -> APROBADA (ninguna regla se dispara)
