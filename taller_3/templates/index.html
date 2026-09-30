@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia de Conductores - Lógica Difusa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 3 · INCERTIDUMBRE Y LÓGICA DIFUSA</span>
+        <h1>🚚 Lógica Difusa Comercial</h1>
+        <p>Fuzzificación de la experiencia de conductores de una empresa de logística automotriz</p>
+    </header>
+
+    <main id="contenedor-conductores">
+        <!-- Tarjeta: Funciones de membresía + evaluador en vivo -->
+        <section class="tarjeta-servidor tarjeta-ancha">
+            <p class="id-servidor">FUNCIONES DE MEMBRESÍA μ(x)</p>
+            <h2>Conjuntos difusos: Novato · Intermedio · Experto</h2>
+            <div class="leyenda">
+                <span style="--color-leyenda: var(--color-advertencia)">Novato (0, 0, 5)</span>
+                <span style="--color-leyenda: var(--color-boton)">Intermedio (2, 5, 8)</span>
+                <span style="--color-leyenda: var(--color-estable)">Experto (5, 10, 20)</span>
+                <span style="--color-leyenda: #f1f5f9">Conductor evaluado</span>
+            </div>
+            <canvas id="grafica" class="grafica" width="1100" height="320"></canvas>
+            <div class="formulario">
+                <label class="campo">Años de experiencia: <span class="valor-rango" id="valor-anios">3</span>
+                    <input type="range" id="rango-anios" min="0" max="20" step="0.5" value="3">
+                </label>
+            </div>
+            <div class="barras" id="barras-vivo"></div>
+            <button class="btn-diagnosticar" onclick="evaluarPersonalizado()">Ver análisis completo</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

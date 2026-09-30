@@ -1,0 +1,41 @@
+TALLER 3 - LABORATORIO: LÓGICA DIFUSA COMERCIAL
+===============================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> grados de membresía en consola (puntos 1 a 4)
+  python app.py              -> interfaz web en http://127.0.0.1:5003
+
+ARCHIVOS
+  laboratorio.py   membresia_triangular(), conjuntos difusos, ciclo for y clasificación con max().
+  app.py           API Flask (/api/conjuntos, /api/conductores, /api/evaluar).
+  templates/, static/   Interfaz web con la gráfica de los tres triángulos.
+
+CONJUNTOS: Novato (0,0,5) · Intermedio (2,5,8) · Experto (5,10,20)
+
+RESULTADOS (puntos 2, 3 y 4)
+  Conductor 3 años:
+    Novato     = (5-3)/(5-0)   = 0.4000
+    Intermedio = (3-2)/(5-2)   = 0.3333
+    Experto    = 0 (3 <= 5)    = 0.0000
+    max() -> NOVATO
+
+  Conductor 6 años:
+    Novato     = 0 (6 >= 5)    = 0.0000
+    Intermedio = (8-6)/(8-5)   = 0.6667
+    Experto    = (6-5)/(10-5)  = 0.2000
+    max() -> INTERMEDIO
+
+  Conductor 12 años:
+    Novato     = 0             = 0.0000
+    Intermedio = 0 (12 >= 8)   = 0.0000
+    Experto    = (20-12)/(20-10) = 0.8000
+    max() -> EXPERTO
+
+OBSERVACIÓN SOBRE LA FUNCIÓN DEL MATERIAL
+  Novato tiene a = b = 0 (hombro izquierdo). Con la función tal cual está en la
+  guía, x = 0 da 0 (porque x <= a) cuando debería dar 1, y el tramo (x-a)/(b-a)
+  dividiría por cero. Por eso se agregó el caso "si x == b, retorna 1.0",
+  que no cambia ningún otro resultado.
+  Con el triángulo Experto (5,10,20), un conductor con 20 años o más obtiene
+  grado 0 en todo; la app lo muestra como "fuera de rango".
