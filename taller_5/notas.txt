@@ -1,0 +1,40 @@
+TALLER 5 - LABORATORIO: DEFUZZIFICACIÓN
+=======================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt          (scikit-fuzzy es opcional)
+  python laboratorio.py      -> validación y frenado automático en consola
+  python app.py              -> interfaz web en http://127.0.0.1:5005
+
+ARCHIVOS
+  laboratorio.py   centroide() con NumPy, validación, campana de Gauss y sistema de frenado.
+  app.py           API Flask (/api/validacion, /api/centroide, /api/frenado).
+  templates/, static/   Interfaz web con la tabla editable y la gráfica de la campana.
+
+1. FUNCIÓN DEL CENTROIDE (COG) CON NUMPY
+   def centroide(x, curva):
+       return np.sum(x * curva) / np.sum(curva)
+   (Se valida que el área no sea 0, porque en ese caso no hay centroide.)
+
+2. VALIDACIÓN CON EL TALLER ANALÍTICO
+   x  = [10, 20, 30, 40]
+   mu = [0.2, 0.8, 0.8, 0.0]
+   Numerador   Σ(x·μ) = 10(0.2) + 20(0.8) + 30(0.8) + 40(0) = 2 + 16 + 24 + 0 = 42
+   Denominador Σ(μ)   = 0.2 + 0.8 + 0.8 + 0 = 1.8
+   COG = 42 / 1.8 = 23.33 %   -> coincide con el cálculo en papel.
+
+3. ESCENARIO: FRENADO AUTOMÁTICO
+   x = np.linspace(0, 100, 100)                       # 100 elementos, 0 a 100 N
+   curva = np.exp(-((x - 70)**2) / (2 * 10**2))       # campana de Gauss centrada en 70 (sigma = 10)
+
+4. FUERZA DE FRENADO EXACTA
+   Centroide NumPy:            69.9621 N
+   skfuzzy.defuzz('centroid'): 69.9552 N   (si está instalado)
+   Campana truncada a 0.6:     69.9521 N
+
+   ¿Por qué no da exactamente 70?  La campana está centrada en 70, pero el
+   universo termina en 100 (solo 3 sigmas a la derecha) mientras que a la
+   izquierda llega hasta 0 (7 sigmas). La cola derecha queda recortada y el
+   centro de masa se corre un poco hacia la izquierda.
+   La pequeña diferencia con skfuzzy se debe a que skfuzzy integra el área con
+   trapecios entre puntos, mientras que la fórmula del taller es la suma discreta.

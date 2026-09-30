@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defuzzificación - Centroide COG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 5 · DEFUZZIFICACIÓN</span>
+        <h1>🎯 Método del Centroide (COG)</h1>
+        <p>De un conjunto difuso a un valor exacto (crisp) con NumPy: Σ(x·μ) / Σ(μ)</p>
+    </header>
+
+    <main>
+        <!-- Tarjeta: Validación con el taller analítico -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PUNTO 1 Y 2 · VALIDACIÓN</p>
+            <h2>Descuento comercial (dominio discreto)</h2>
+            <p class="descripcion">Datos del taller analítico. Puede editar los valores y recalcular.</p>
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead><tr><th>x (% descuento)</th><th>μ(x)</th></tr></thead>
+                    <tbody id="tabla-validacion"></tbody>
+                </table>
+            </div>
+            <button class="btn-diagnosticar" onclick="calcularValidacion()">Calcular centroide</button>
+        </section>
+
+        <!-- Tarjeta: Frenado automático -->
+        <section class="tarjeta-servidor tarjeta-ancha" id="tarjeta-frenado">
+            <p class="id-servidor">PUNTO 3 Y 4 · FRENADO AUTOMÁTICO</p>
+            <h2>Fuerza de frenado (0 a 100 N) con campana de Gauss</h2>
+            <div class="leyenda">
+                <span style="--color-leyenda: var(--color-boton)">μ(x) campana de Gauss (100 puntos)</span>
+                <span style="--color-leyenda: var(--color-advertencia)">Centroide (fuerza exacta)</span>
+            </div>
+            <canvas id="grafica" class="grafica" width="1100" height="320"></canvas>
+            <div class="formulario">
+                <label class="campo">Centro: <span class="valor-rango" id="valor-centro">70</span> N
+                    <input type="range" id="centro" min="0" max="100" step="1" value="70">
+                </label>
+                <label class="campo">Sigma (ancho): <span class="valor-rango" id="valor-sigma">10</span>
+                    <input type="range" id="sigma" min="2" max="30" step="1" value="10">
+                </label>
+                <label class="campo">Truncar a (corte Mamdani): <span class="valor-rango" id="valor-altura">1.00</span>
+                    <input type="range" id="altura" min="0.05" max="1" step="0.05" value="1">
+                </label>
+            </div>
+            <ul class="lista-metricas" id="resumen-frenado"></ul>
+            <button class="btn-diagnosticar" onclick="verDetalleFrenado()">Ver resultado del frenado</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
