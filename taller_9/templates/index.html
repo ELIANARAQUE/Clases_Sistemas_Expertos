@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hackeando los Pesos - Perceptrón</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 9 · EL PERCEPTRÓN</span>
+        <h1>🧠 Hackeando los Pesos</h1>
+        <p>Perceptrón desde cero con NumPy: Z = X·W + b y función escalón</p>
+    </header>
+
+    <main id="contenedor-compuertas">
+        <!-- Tarjeta: Laboratorio de pesos -->
+        <section class="tarjeta-servidor tarjeta-ancha">
+            <p class="id-servidor">EL RETO · AJUSTE MANUAL DE W Y b</p>
+            <h2>Laboratorio de pesos</h2>
+            <form id="form-pesos" class="formulario">
+                <label class="campo">Compuerta objetivo
+                    <select name="compuerta">
+                        <option value="OR" selected>OR</option>
+                        <option value="AND">AND</option>
+                    </select>
+                </label>
+                <label class="campo">W1: <span class="valor-rango" id="valor-w1">0.50</span>
+                    <input type="range" name="w1" min="-1" max="1" step="0.05" value="0.5">
+                </label>
+                <label class="campo">W2: <span class="valor-rango" id="valor-w2">0.50</span>
+                    <input type="range" name="w2" min="-1" max="1" step="0.05" value="0.5">
+                </label>
+                <label class="campo">Sesgo b: <span class="valor-rango" id="valor-b">-0.80</span>
+                    <input type="range" name="b" min="-1" max="1" step="0.05" value="-0.8">
+                </label>
+            </form>
+            <div id="estado-reto" class="veredicto"></div>
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead><tr><th>X1</th><th>X2</th><th>Z = X·W + b</th><th>Salida</th><th>Esperado</th><th></th></tr></thead>
+                    <tbody id="tabla-vivo"></tbody>
+                </table>
+            </div>
+            <div class="leyenda">
+                <span style="--color-leyenda: var(--color-estable)">Salida esperada 1</span>
+                <span style="--color-leyenda: var(--color-critico)">Salida esperada 0</span>
+                <span style="--color-leyenda: rgba(59, 130, 246, 0.6)">Región donde la neurona dispara (Z ≥ 0)</span>
+            </div>
+            <canvas id="grafica" class="grafica" width="420" height="420" style="max-width: 420px; margin: 0 auto 1rem;"></canvas>
+            <button class="btn-diagnosticar" onclick="verificarPesos()">Verificar pesos</button>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

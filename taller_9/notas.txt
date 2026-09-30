@@ -1,0 +1,51 @@
+TALLER 9 - LABORATORIO: HACKEANDO LOS PESOS (COMPUERTA OR)
+==========================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> verificación del AND y solución del OR en consola
+  python app.py              -> interfaz web en http://127.0.0.1:5009
+                                (rangos para mover W1, W2 y b y ver la frontera en vivo)
+
+ARCHIVOS
+  laboratorio.py   funcion_escalon(), perceptron() con np.dot y tablas de verdad AND / OR.
+  app.py           API Flask (/api/compuertas, /api/evaluar).
+  templates/, static/   Laboratorio de pesos con tabla de verdad y gráfica de la frontera.
+
+1. CÓDIGO TRANSCRITO: entradas [1, 1], pesos [0.5, 0.5], sesgo -0.8
+   "El Perceptrón disparó el valor: 1"
+
+2. VERIFICACIÓN DE LA COMPUERTA AND (W = [0.5, 0.5], b = -0.8)
+   X1 X2 |  Z = 0.5·X1 + 0.5·X2 - 0.8 | Salida
+    1  1 |   0.2                      |   1
+    1  0 |  -0.3                      |   0
+    0  1 |  -0.3                      |   0
+    0  0 |  -0.8                      |   0     -> las tres combinaciones arrojan 0. Correcto.
+
+3 y 4. EL RETO: COMPUERTA OR
+   Con los pesos del AND, [1,0] y [0,1] dan Z = -0.3 -> 0 (fallan). Una sola
+   entrada activa (0.5) no alcanza a vencer un sesgo de -0.8. Hay que bajar la
+   "exigencia" de la neurona, es decir, subir el sesgo.
+
+5. PESOS Y SESGO QUE RESUELVEN EL PROBLEMA
+   W = [0.5, 0.5]    b = -0.3
+   X1 X2 |  Z = 0.5·X1 + 0.5·X2 - 0.3 | Salida
+    1  1 |   0.7                      |   1
+    1  0 |   0.2                      |   1
+    0  1 |   0.2                      |   1
+    0  0 |  -0.3                      |   0     -> ¡Compuerta OR resuelta!
+
+   Por qué funciona (condiciones que debe cumplir cualquier solución):
+     [0,0]: Z = b < 0          -> b debe ser negativo
+     [1,0]: Z = W1 + b >= 0    -> W1 >= -b
+     [0,1]: Z = W2 + b >= 0    -> W2 >= -b
+     ([1,1] queda cubierto automáticamente.)
+   Con W1 = W2 = 0.5 sirve cualquier sesgo entre -0.5 y un valor apenas menor
+   que 0, por ejemplo -0.3. Otras soluciones válidas: W = [1, 1] con b = -0.5.
+
+   Comparación: el AND y el OR usan los MISMOS pesos; lo único que cambia es el
+   sesgo (-0.8 vs -0.3). Geométricamente, el sesgo desplaza la recta frontera
+   0.5·X1 + 0.5·X2 + b = 0: en el AND deja solo a [1,1] del lado que dispara y
+   en el OR deja a [0,0] solo del otro lado. Buscar esos valores a mano es lo
+   que el entrenamiento hace automáticamente: ajustar los pesos para reducir
+   el error.
