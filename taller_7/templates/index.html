@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clasificador Universal - KNN</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 7 · K VECINOS MÁS CERCANOS (KNN)</span>
+        <h1>📍 Clasificador Universal</h1>
+        <p>¿El cliente comprará? Votación de los K vecinos más cercanos en 3 dimensiones</p>
+    </header>
+
+    <main>
+        <!-- Tarjeta: Dataset -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PUNTOS 1 A 3 · DATASET AMPLIADO</p>
+            <h2>Clientes históricos (13 filas × 3 columnas)</h2>
+            <p class="descripcion" id="texto-original"></p>
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead><tr><th>#</th><th>Edad</th><th>Salario (miles)</th><th>Hijos</th><th>Clase</th></tr></thead>
+                    <tbody id="tabla-dataset"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Tarjeta: Clasificar punto nuevo -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PUNTO 4 · EXPERIMENTO CON K</p>
+            <h2>Clasificar un cliente nuevo</h2>
+            <form id="form-cliente" class="formulario">
+                <label class="campo">Edad
+                    <input type="number" name="edad" value="38" min="0" required>
+                </label>
+                <label class="campo">Salario (miles)
+                    <input type="number" name="salario" value="47" min="0" required>
+                </label>
+                <label class="campo">Hijos
+                    <input type="number" name="hijos" value="2" min="0" required>
+                </label>
+                <label class="campo">K (n_neighbors)
+                    <select name="k">
+                        <option value="1">1</option>
+                        <option value="3">3</option>
+                        <option value="5" selected>5</option>
+                        <option value="7">7</option>
+                    </select>
+                </label>
+            </form>
+            <div class="grupo-botones">
+                <button class="btn-diagnosticar" onclick="clasificarCliente()">Clasificar</button>
+                <button class="btn-diagnosticar btn-secundario" onclick="compararK()">Comparar K=1 vs K=5</button>
+            </div>
+        </section>
+
+        <!-- Tarjeta: Maldición de la dimensionalidad -->
+        <section class="tarjeta-servidor tarjeta-ancha">
+            <p class="id-servidor">PUNTO 5 · PREGUNTA DE ANÁLISIS</p>
+            <h2>La maldición de la dimensionalidad</h2>
+            <p class="descripcion">
+                500 puntos aleatorios en un hipercubo [0, 1]<sup>d</sup>. El contraste (máx − mín) / mín mide
+                cuánto se diferencia el vecino más cercano del más lejano: al crecer d tiende a 0.
+            </p>
+            <div class="tabla-contenedor">
+                <table class="tabla">
+                    <thead><tr><th>Dimensiones</th><th>Distancia mínima</th><th>Distancia máxima</th><th>Contraste</th><th></th></tr></thead>
+                    <tbody id="tabla-dimensionalidad"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content ancho">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+TALLER 7 - LABORATORIO: CLASIFICADOR UNIVERSAL (KNN)
+====================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> código original, experimento con K y demostración de dimensionalidad
+  python app.py              -> interfaz web en http://127.0.0.1:5007
+
+ARCHIVOS
+  laboratorio.py   Código original de la guía, dataset ampliado 3D, clasificar(punto, k) y demo_dimensionalidad().
+  app.py           API Flask (/api/dataset, /api/clasificar, /api/comparar, /api/dimensionalidad).
+  templates/, static/   Interfaz web: dataset, clasificación con votos y tabla de dimensionalidad.
+
+1. CÓDIGO ORIGINAL (2D, A(20,30), B(40,50), C(35,45), K = 3)
+   Punto nuevo (30, 40) -> Clase predicha: 1 (COMPRA)
+
+2 y 3. DATASET AMPLIADO: 13 filas x 3 columnas [Edad, Salario (miles), Hijos]
+   Se conservan A, B y C y se agregan 10 clientes. Y_entrenamiento tiene 13
+   etiquetas, una por fila. La fila 13 [39, 46, 2] es un cliente ATÍPICO: tiene
+   el perfil de los compradores, pero no compró (ruido real de los datos).
+
+4. EXPERIMENTO CON K (punto nuevo [38, 47, 2])
+   n_neighbors = 1 -> NO COMPRA
+      El único vecino es la fila 13 (el atípico), a distancia 1.41.
+   n_neighbors = 5 -> COMPRA
+      Vecinos: fila 13 (NO, 1.41), fila 3 (SÍ, 3.61), fila 2 (SÍ, 3.74),
+               fila 12 (SÍ, 4.12), fila 9 (SÍ, 5.10)  -> votos 4 a 1.
+   Conclusión: con K pequeño el modelo es muy sensible al ruido (un solo dato
+   atípico decide); con K más grande la votación suaviza el ruido, aunque un K
+   demasiado grande termina ignorando los patrones locales (subajuste).
+   Nota: el salario y la edad tienen escalas distintas a "Hijos"; en un caso
+   real conviene normalizar (StandardScaler) para que ninguna variable domine
+   la distancia.
+
+5. PREGUNTA DE ANÁLISIS: LA MALDICIÓN DE LA DIMENSIONALIDAD
+   Con 1000 columnas la distancia euclidiana pierde su capacidad de distinguir:
+     - Cada dimensión suma un término (xi - yi)^2, así que todas las distancias
+       crecen (aprox. con la raíz de d) y se vuelven enormes.
+     - Lo más grave: las distancias se CONCENTRAN. La diferencia entre el vecino
+       más cercano y el más lejano se vuelve muy pequeña comparada con la
+       distancia misma, es decir, todos los puntos quedan "casi igual de lejos".
+     - Si todos están a la misma distancia, "el vecino más cercano" deja de
+       significar algo y KNN vota casi al azar.
+     - El espacio se vuelve casi vacío: para cubrirlo con la misma densidad
+       harían falta exponencialmente más datos.
+     - Además el costo de cada predicción crece (1000 restas por punto memorizado).
+
+   Demostración (500 puntos aleatorios en [0,1]^d, laboratorio.py):
+       d =    2   contraste (max-min)/min = 40.73
+       d =    3   contraste               =  9.09
+       d =   10   contraste               =  1.75
+       d =  100   contraste               =  0.35
+       d = 1000   contraste               =  0.11   (min 12.19 vs max 13.56)
+   Soluciones: reducir dimensiones (PCA, selección de variables), normalizar
+   los datos o usar modelos que aprendan representaciones (redes convolucionales
+   en el caso de imágenes).
