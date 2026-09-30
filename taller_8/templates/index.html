@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fronteras No Lineales - SVM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="etiqueta-taller">TALLER 8 · MÁQUINAS DE VECTORES DE SOPORTE</span>
+        <h1>✂️ Fronteras No Lineales</h1>
+        <p>SVM con kernel lineal vs RBF: vectores de soporte, margen y el "Kernel Trick"</p>
+    </header>
+
+    <main>
+        <!-- Tarjeta: Controles del modelo -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">CONFIGURACIÓN DEL MODELO</p>
+            <h2>Escenario y kernel</h2>
+            <form id="form-svm" class="formulario">
+                <label class="campo">Escenario
+                    <select name="escenario" id="escenario"></select>
+                </label>
+                <label class="campo">Kernel
+                    <select name="kernel">
+                        <option value="linear">linear</option>
+                        <option value="rbf">rbf</option>
+                    </select>
+                </label>
+                <label class="campo">C (penalización)
+                    <input type="number" name="C" value="1" min="0.01" step="any">
+                </label>
+                <label class="campo">gamma (solo rbf)
+                    <input type="text" name="gamma" value="scale">
+                </label>
+            </form>
+            <p class="descripcion" id="descripcion-escenario"></p>
+            <ul class="lista-metricas" id="resumen-modelo"></ul>
+            <div class="grupo-botones">
+                <button class="btn-diagnosticar" onclick="entrenarModelo()">Entrenar</button>
+                <button class="btn-diagnosticar btn-secundario" onclick="verAnalisis()">Ver análisis</button>
+            </div>
+        </section>
+
+        <!-- Tarjeta: Plano cartesiano -->
+        <section class="tarjeta-servidor">
+            <p class="id-servidor">PLANO CARTESIANO 0 A 10 · HAGA CLIC PARA CLASIFICAR UN PUNTO</p>
+            <h2>Frontera de decisión</h2>
+            <div class="leyenda">
+                <span style="--color-leyenda: var(--color-boton)">Clase A (●, 0)</span>
+                <span style="--color-leyenda: var(--color-advertencia)">Clase B (✕, 1)</span>
+                <span style="--color-leyenda: var(--color-critico)">Vector de soporte</span>
+            </div>
+            <canvas id="grafica" class="grafica" width="600" height="600"></canvas>
+        </section>
+    </main>
+
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Resultado</h2>
+                <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="modal-subtitulo"></p>
+                <div id="modal-veredicto" class="veredicto"></div>
+                <div id="modal-detalle"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

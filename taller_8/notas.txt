@@ -1,0 +1,63 @@
+TALLER 8 - LABORATORIO: FRONTERAS NO LINEALES (SVM)
+===================================================
+
+CÓMO EJECUTAR
+  pip install -r requirements.txt
+  python laboratorio.py      -> los 4 pasos del laboratorio en consola
+  python app.py              -> interfaz web en http://127.0.0.1:5008
+                                (clic en el plano para clasificar cualquier punto)
+
+ARCHIVOS
+  laboratorio.py   Escenarios (original, trampa [5,5], rodeado [7,7]), entrenamiento SVC y análisis.
+  app.py           API Flask (/api/escenarios, /api/svm, /api/predecir).
+  templates/, static/   Plano cartesiano con regiones de decisión y vectores de soporte en rojo.
+
+1. CÓDIGO ORIGINAL (kernel='linear')
+   Los Vectores de Soporte son: [3, 3], [4, 2], [6, 6]
+   Hiperplano: 0.333x + 0.333y - 3 = 0   ->   x + y = 9
+   Ancho de la calle (margen) = 2/||w|| = 4.243
+   El punto [5, 4] pertenece a la clase: 0 (Clase A)
+   ¿Coinciden con el cuaderno? Sí: son los puntos de cada grupo más cercanos
+   a la frontera. De la Clase A, (3,3) y (4,2) están sobre la recta x + y = 6;
+   de la Clase B, (6,6) está sobre x + y = 12. La recta óptima queda justo en
+   medio (x + y = 9) y los otros 3 puntos no influyen en ella.
+
+2 y 3. SE AGREGA [5, 5] CON ETIQUETA 0 Y SE REENTRENA EL LINEAL
+   Vectores de soporte: [5, 5] y [6, 6]
+   Hiperplano: x + y - 11 = 0      Margen: 1.414 (antes 4.243)
+   Exactitud: 100 %
+   Resultado: el modelo NO falla, porque los datos todavía se pueden separar
+   con una recta (A suma como máximo 10 y B como mínimo 12). Pero sí queda
+   FORZADO: la frontera se corre hacia la Clase B y la calle se reduce a la
+   tercera parte. Ahora dos puntos definen todo el modelo y cualquier dato
+   nuevo cerca de la frontera se clasificaría con muy poco margen de seguridad.
+   Para ver el lineal fallar de verdad está el escenario extra "rodeado":
+   agregando [7, 7] como Clase A en medio de la Clase B, ninguna recta los
+   separa y la exactitud cae a 75 %.
+
+4. KERNEL RBF
+   Escenario trampa: 100 % de exactitud, 6 vectores de soporte, frontera curva.
+   [5,4] -> 0, [5,5] -> 0, [7,7] -> 1.
+   Escenario rodeado con los valores por defecto (C = 1, gamma = 'scale'):
+   87.5 %, todavía no aísla el punto [7,7]. Con gamma = 1 (curvas más
+   "cerradas") llega a 100 % y encierra [7,7] en una pequeña isla de la Clase A,
+   mientras el lineal sigue en 75 %. Esto se puede probar en la interfaz
+   cambiando gamma y C.
+
+5. REFLEXIÓN: ¿DÓNDE FALLARÍA UN KERNEL LINEAL Y SE NECESITARÍA RBF?
+   Cuando una clase queda "encerrada" por la otra, no existe una recta que las
+   separe. Ejemplos:
+   - Medicina: un tumor o una lesión en una imagen médica es una región
+     rodeada de tejido sano; también los rangos "normales" de exámenes, donde
+     tanto un valor muy bajo como uno muy alto es enfermedad (glucosa,
+     presión arterial, temperatura): lo sano está en el centro, rodeado de
+     riesgo por ambos lados.
+   - Reconocimiento facial: los píxeles de un rostro cambian de forma no
+     lineal con la luz, el ángulo y la expresión; las fotos de una misma
+     persona forman grupos curvos y entrelazados con los de otras personas.
+   - Detección de fraude o de intrusos en una red: el comportamiento normal
+     forma un núcleo y los ataques aparecen alrededor en muchas direcciones.
+   El Kernel Trick (RBF) mide la similitud por cercanía, lo que equivale a
+   llevar los datos a un espacio de más dimensiones donde sí se pueden separar
+   con un hiperplano. El costo: hay que ajustar C y gamma, porque un gamma
+   muy alto memoriza los datos (sobreajuste).
